@@ -1,11 +1,25 @@
+version: "3.8"
 
 services:
   server:
-    # ###
-    # 다음 주석을 지우고 compose 를 완성하자
-    # ###
+    image: fastapi-app  # 이미 빌드된 FastAPI 서버 이미지
+    container_name: fastapi-server
+    build:
+      context: ./server
+    ports:
+      - "8000:8000"  # 서버의 8000번 포트를 호스트에 노출
+    networks:
+      - app_network
 
   client:
-    # ###
-    # 다음 주석을 지우고 compose 를 완성하자
-    # ###
+    build:
+      context: ./client  # 클라이언트 Dockerfile이 있는 디렉토리
+    container_name: client
+    environment:
+      - TARGET_IP=fastapi-server  # 서버 컨테이너 이름으로 접근
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
